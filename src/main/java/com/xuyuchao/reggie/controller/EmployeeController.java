@@ -63,7 +63,34 @@ public class EmployeeController {
      */
     @PostMapping("/logout")
     public R<String> logout(HttpServletRequest request) {
+        //移除Session
         request.getSession().removeAttribute("employee");
         return R.success("退出成功!");
     }
+
+    /**
+     * 添加员工
+     * @return
+     */
+    @PostMapping("")
+    public R<String> addEmployee(@RequestBody Employee employee,HttpServletRequest request) {
+        //1.查询数据库是否存在用户名
+        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        queryWrapper.eq(Employee::getUsername,employee.getUsername());
+        Employee emp = employeeService.getOne(queryWrapper);
+        if(emp != null) {
+            return R.error("该帐号已存在!");
+        }
+        //2.保存至数据库
+        //设置初始密码123456,并进行md5加密
+        employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
+        //获取当前登录用户id
+        Long id = (Long) request.getSession().getAttribute("employee");
+        employee.setCreateUser(id);
+        employee.setUpdateUser(id);
+        employeeService.save(employee);
+
+        return R.success("新增员工成功!");
+    }
+
 }
