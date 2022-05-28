@@ -74,13 +74,14 @@ public class EmployeeController {
      */
     @PostMapping("")
     public R<String> addEmployee(@RequestBody Employee employee,HttpServletRequest request) {
-        //1.查询数据库是否存在用户名
-        LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
-        queryWrapper.eq(Employee::getUsername,employee.getUsername());
-        Employee emp = employeeService.getOne(queryWrapper);
-        if(emp != null) {
-            return R.error("该帐号已存在!");
-        }
+        //由于数据库中username字段添加了唯一约束,故我们不做此处理,而是配置全局异常处理器
+        // //1.查询数据库是否存在用户名
+        // LambdaQueryWrapper<Employee> queryWrapper = new LambdaQueryWrapper<>();
+        // queryWrapper.eq(Employee::getUsername,employee.getUsername());
+        // Employee emp = employeeService.getOne(queryWrapper);
+        // if(emp != null) {
+        //     return R.error("该帐号已存在!");
+        // }
         //2.保存至数据库
         //设置初始密码123456,并进行md5加密
         employee.setPassword(DigestUtils.md5DigestAsHex("123456".getBytes()));
