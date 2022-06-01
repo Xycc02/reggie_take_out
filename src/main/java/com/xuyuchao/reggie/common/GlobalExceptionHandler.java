@@ -25,6 +25,14 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(SQLIntegrityConstraintViolationException.class)
     public R<String> exceptionHandler(SQLIntegrityConstraintViolationException ex) {
         log.info(ex.getMessage());
-        return R.error("该帐号已存在!");
+        //Duplicate entry 'xuyuchao' for key 'employee.idx_username'
+        //判断是否是用户名存在异常
+        if(ex.getMessage().contains("Duplicate entry")) {
+            //根据空格把字符串隔开
+            String[] strs = ex.getMessage().split(" ");
+            String res = "帐号 " + strs[2] + " 已存在!";
+            return R.error(res);
+        }
+        return R.error("出现异常!");
     }
 }

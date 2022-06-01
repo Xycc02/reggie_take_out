@@ -17,4 +17,8 @@ mybatis-plus:
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   global-config:
     db-config:
+      #主键id雪花算法
       id-type: ASSIGN_ID
+
+reggie:
+  path: E:\Java微服务项目\瑞吉外卖\img\

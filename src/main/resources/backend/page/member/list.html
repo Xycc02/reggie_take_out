@@ -92,7 +92,7 @@
       </el-table>
       <el-pagination
         class="pageList"
-        :page-sizes="[10, 20, 30, 40]"
+        :page-sizes="[5, 10, 15, 20]"
         :page-size="pageSize"
         layout="total, sizes, prev, pager, next, jumper"
         :total="counts"
@@ -118,13 +118,14 @@
              input: '',
              counts: 0,
              page: 1,
-             pageSize: 10,
+             pageSize: 5,
              tableData : [],
              id : '',
              status : '',
           }
         },
         computed: {},
+        //钩子函数,在Vue对象创建时自动调用
         created() {
           this.init()
           this.user = JSON.parse(localStorage.getItem('userInfo')).username

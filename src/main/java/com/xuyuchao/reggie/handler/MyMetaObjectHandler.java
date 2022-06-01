@@ -1,6 +1,7 @@
 package com.xuyuchao.reggie.handler;
 
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
+import com.xuyuchao.reggie.common.BaseContext;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
 import org.springframework.stereotype.Component;
@@ -21,8 +22,11 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void insertFill(MetaObject metaObject) {
+        log.info("公共字段填充insertFill");
         this.strictInsertFill(metaObject, "createTime", () -> LocalDateTime.now(), LocalDateTime.class); // 起始版本 3.3.3(推荐)
         this.strictInsertFill(metaObject, "updateTime", () -> LocalDateTime.now(), LocalDateTime.class); // 起始版本 3.3.3(推荐)
+        this.strictInsertFill(metaObject, "createUser", () -> BaseContext.getCurrentId(), Long.class); // 起始版本 3.3.3(推荐)
+        this.strictInsertFill(metaObject, "updateUser", () -> BaseContext.getCurrentId(), Long.class); // 起始版本 3.3.3(推荐)
     }
 
     /**
@@ -31,6 +35,9 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
      */
     @Override
     public void updateFill(MetaObject metaObject) {
+        log.info("公共字段填充updateFill");
+        log.info("updateFill方法线程id=>{}",Thread.currentThread().getId());
         this.strictInsertFill(metaObject, "updateTime", () -> LocalDateTime.now(), LocalDateTime.class); // 起始版本 3.3.3(推荐)
+        this.strictInsertFill(metaObject, "updateUser", () -> BaseContext.getCurrentId(), Long.class); // 起始版本 3.3.3(推荐)
     }
 }

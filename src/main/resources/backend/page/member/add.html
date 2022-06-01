@@ -189,7 +189,7 @@
                     sex: this.ruleForm.sex === '女' ? '0' : '1'
                   }
                   editEmployee(params).then(res => {
-                    if (res.code === 1) {
+                    if (String(res.code) === '1') {
                       this.$message.success('员工信息修改成功！')
                       this.goBack()
                     } else {

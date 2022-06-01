@@ -1,6 +1,7 @@
 package com.xuyuchao.reggie.filter;
 
 import com.alibaba.fastjson.JSON;
+import com.xuyuchao.reggie.common.BaseContext;
 import com.xuyuchao.reggie.common.R;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -25,6 +26,7 @@ public class LoginCheckFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
+        log.info("doFilter方法线程id=>{}",Thread.currentThread().getId());
         HttpServletRequest request = (HttpServletRequest)servletRequest;
         HttpServletResponse response = (HttpServletResponse) servletResponse;
         //1.获取本次请求的URI
@@ -36,7 +38,8 @@ public class LoginCheckFilter implements Filter {
                 "/employee/login",
                 "/employee/logout",
                 "/backend/**",
-                "/front/**"
+                "/front/**",
+                "/common/**"
         };
         boolean check = check(urls, URI);
         //3.若不需要处理,直接放行
@@ -47,6 +50,10 @@ public class LoginCheckFilter implements Filter {
         }
         //4.判断登录状态,若已登录,放行
         if(request.getSession().getAttribute("employee") != null) {
+            //将当前用户id存入ThreadLocal,便于MP自动填充
+            Long id = (Long) request.getSession().getAttribute("employee");
+            BaseContext.setCurrentId(id);
+
             log.info("用户 {} 已登录,直接放行",request.getSession().getAttribute("employee"));
             filterChain.doFilter(request,response);
             return;
