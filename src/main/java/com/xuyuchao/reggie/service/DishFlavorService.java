@@ -10,6 +10,5 @@ import com.xuyuchao.reggie.entity.DishFlavor;
  * @Description:
  */
 public interface DishFlavorService extends IService<DishFlavor> {
-    //保存菜品并保存菜品对应口味,需要操作两张表dish dish_flavor
-    public void saveWithFlavor(DishDto dishDto);
+
 }
