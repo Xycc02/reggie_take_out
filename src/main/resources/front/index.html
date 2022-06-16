@@ -40,13 +40,16 @@
         </div>
       </div>
       <div class="divBody">
+        <!--左侧外卖分类列表-->
         <div class="divType">
           <ul>
             <li v-for="(item,index) in categoryList" :key="index" @click="categoryClick(index,item.id,item.type)" :class="{active:activeType === index}">{{item.name}}</li>
           </ul>
         </div>
+
         <div class="divMenu">
           <div>
+            <!--遍历菜品列表,展示菜品信息 Start-->
             <div class="divItem" v-for="(item,index) in dishList" :key="index" @click="dishDetails(item)">
               <el-image :src="imgPathConvert(item.image)" >
                 <div slot="error" class="image-slot">
@@ -70,14 +73,17 @@
                 </div>
               </div>
             </div>
+            <!--遍历菜品列表,展示菜品信息 End-->
           </div>
         </div>
 
       </div>
+
       <div class="divLayer">
         <div class="divLayerLeft"></div>
         <div class="divLayerRight"></div>
       </div>
+      <!--结算购物车Start-->
       <div class="divCart" v-if="categoryList.length > 0">
           <div :class="{imgCartActive: cartData && cartData.length > 0, imgCart:!cartData || cartData.length<1}" @click="openCart"></div>
           <div :class="{divGoodsNum:1===1, moreGoods:cartData && cartData.length > 99}" v-if="cartData && cartData.length > 0">{{ goodsNum }}</div>
@@ -87,7 +93,9 @@
           </div>
           <div class="divPrice"></div>
           <div :class="{btnSubmitActive: cartData && cartData.length > 0, btnSubmit:!cartData || cartData.length<1}" @click="toAddOrderPage">去结算</div>
-        </div>
+      </div>
+
+        <!--具有口味的菜品点击选择规格时出现的模态框选择口味-->
         <van-dialog v-model="dialogFlavor.show" :show-confirm-button="false" class="dialogFlavor" ref="flavorDialog">
           <div class="dialogTitle">{{dialogFlavor.name}}</div>
           <div class="divContent">
@@ -108,6 +116,8 @@
             <img src="./images/close.png"/>
           </div>
         </van-dialog>
+
+        <!--展开购物车-->
         <van-popup v-model="cartDialogShow" position="bottom" :style="{ height: '50%' }" class="dialogCart">
           <div class="divCartTitle">
             <div class="title">购物车</div>
@@ -140,6 +150,8 @@
               </div>
           </div>
         </van-popup>
+
+
         <van-dialog v-model="detailsDialog.show" 
                     :show-confirm-button="false" 
                     class="detailsDialog" 
@@ -174,6 +186,8 @@
             <img src="./images/close.png"/>
           </div>
         </van-dialog>
+
+
         <van-dialog v-model="setMealDialog.show" 
                     :show-confirm-button="false" 
                     class="setMealDetailsDialog" 
@@ -215,6 +229,8 @@
             <img src="./images/close.png"/>
           </div>
         </van-dialog>
+
+
     </div>
         <!-- 开发环境版本，包含了有帮助的命令行警告 -->
         <script src="../backend/plugins/vue/vue.js"></script>
@@ -261,6 +277,7 @@
           computed:{
             goodsNum(){
               let num = 0
+              //得到购物车列表的数据数量
               this.cartData.forEach(item=>{
                 num += item.number 
               })
@@ -296,6 +313,7 @@
             //初始化数据
             initData(){
               Promise.all([categoryListApi(),cartListApi({})]).then(res=>{
+                console.log(res);
                 //获取分类数据
                 if(res[0].code === 1){
                   this.categoryList = res[0].data
@@ -374,6 +392,7 @@
                 this.$notify({ type:'warning', message:res.msg});
               }
             },
+
             //获取购物车数据
             async getCartData(){
               const res = await cartListApi({})

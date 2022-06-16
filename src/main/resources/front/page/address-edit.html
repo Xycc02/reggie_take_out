@@ -49,6 +49,7 @@
                     <span>标签：</span> 
                     <span v-for="(item,index) in labelList" :key="index" @click="form.label = item;activeIndex = index" :class="{spanItem:true,spanActiveSchool:activeIndex === index}">{{item}}</span>
                 </div>
+
                 <div class="divSave" @click="saveAddress">保存地址</div>
                 <div class="divDelete" @click="deleteAddress" v-if="id">删除地址</div>
             </div>
@@ -75,13 +76,13 @@
                             phone:undefined,//手机号
                             sex:'1',//0表示女 1 表示男
                             detail:'',//收货地址
-                            label:'公司',//标签
+                            label:'',//标签
                         },
                         labelList:[
                             '无','公司','家','学校'
                         ],
                         id:undefined,
-                        activeIndex :0
+                        activeIndex :undefined
                     }
                 },
                 computed:{},
@@ -102,6 +103,8 @@
                             const res = await addressFindOneApi(params.id)
                             if(res.code === 1){
                                 this.form = res.data
+                                //根据当前地址标签得到地址数组索引,并为数组活动索引
+                                this.activeIndex = this.labelList.indexOf(this.form.label);
                             }else{
                                 this.$notify({ type:'warning', message:res.msg});
                             }

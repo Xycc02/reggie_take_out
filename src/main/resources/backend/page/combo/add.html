@@ -188,6 +188,8 @@
               <el-input v-model="ruleForm.price" placeholder="请设置套餐价格" />
             </el-form-item>
           </div>
+
+          <!--添加套餐菜品-->
           <div>
             <el-form-item label="套餐菜品:" class="setmealFood">
               <el-form-item>
@@ -224,6 +226,8 @@
               </el-form-item>
             </el-form-item>
           </div>
+
+
           <div>
             <el-form-item label="套餐图片:" class="uploadImg">
               <el-upload
@@ -260,6 +264,8 @@
           </div>
         </el-form>
       </div>
+
+      <!--添加套餐菜品dialog-->
       <el-dialog
         title="添加菜品"
         class="addDishList"
@@ -448,8 +454,8 @@
           }
         },
         created() {
-          this.getDishTypeList()
-          this.getDishType()
+          this.getDishTypeList()//获取套餐分类,回显下拉框
+          this.getDishType()//获取添加套餐菜品左侧菜品列表
           this.id = requestUrlParam('id')
           this.actionType = this.id ? 'edit' : 'add'
           if (this.id) {
@@ -505,7 +511,7 @@
             //搜索条件清空，菜品重新查询，菜品类别选第一个重新查询
             this.value = ''
             this.keyInd = 0
-            this.getDishList(this.dishType[0].id)
+            this.getDishList(this.dishType[0].id)//此处在点击添加菜品之后,自动发出请求获得第一条菜品
           },
           // 取消添加菜品
           handleClose(done) {
@@ -636,7 +642,7 @@
               false
             )
           },
-          // 获取套餐分类
+          // 获取菜品的分类列表
           getDishType () {
             getCategoryList({'type':1}).then(res => {
               if (res.code === 1) {

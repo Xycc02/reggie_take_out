@@ -138,7 +138,7 @@
                 mounted(){},
                 methods:{
                     goBack(){
-                        history.go(-1)
+                        window.location.href='/front/index.html'
                     },
                     initData(){
                         //获取默认的地址
@@ -189,7 +189,8 @@
                         const params = {
                             remark:this.note,
                             payMethod:1,
-                            addressBookId:this.address.id
+                            addressBookId:this.address.id,
+                            amount:this.goodsPrice
                         }
                         const res = await addOrderApi(params)
                         if(res.code === 1){

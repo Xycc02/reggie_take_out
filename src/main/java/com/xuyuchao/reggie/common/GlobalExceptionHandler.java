@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import java.io.FileNotFoundException;
 import java.sql.SQLIntegrityConstraintViolationException;
 
 /**
@@ -34,5 +35,17 @@ public class GlobalExceptionHandler {
             return R.error(res);
         }
         return R.error("出现异常!");
+    }
+
+    @ExceptionHandler(FileNotFoundException.class)
+    public R<String> exceptionHandler(FileNotFoundException ex) {
+        log.error(ex.getMessage());
+        return R.error("图片文件加载失败!");
+    }
+
+    @ExceptionHandler(NullPointerException.class)
+    public R<String> exceptionHandler(NullPointerException ex) {
+        log.error("空指针异常!" + ex.getMessage());
+        return R.error("发生错误");
     }
 }

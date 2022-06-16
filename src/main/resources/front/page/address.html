@@ -24,6 +24,7 @@
                     <i class="el-icon-arrow-left" @click="goBack"></i>地址管理
                 </div>
             </div>
+            <!--地址列表-->
             <div class="divContent">
                 <div class="divItem" v-for="(item,index) in addressList" :key="index" @click.capture="itemClick(item)">
                     <div class="divAddress">
@@ -43,6 +44,7 @@
                     </div>
                 </div>
             </div>
+
             <div class="divBottom" @click="toAddressCreatePage">+ 添加收货地址</div>
         </div>
             <!-- 开发环境版本,包含了有帮助的命令行警告 -->
@@ -148,7 +150,7 @@
                         //表示是从订单页面跳转过来的
                         if(url.includes('order')){
                             this.setDefaultAddress(item)
-                            history.go(-1)
+                            window.location=document.referrer
                         }
                     }
 

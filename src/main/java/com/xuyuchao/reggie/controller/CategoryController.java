@@ -87,8 +87,13 @@ public class CategoryController {
      * @return
      */
     @GetMapping("/list")
-    public R<List<Category>> getDishList(@RequestParam Integer type) {
+    public R<List<Category>> getDishList(@RequestParam(required = false,defaultValue = "0") Integer type) {
         log.info("菜品分类type={}",type);
+        if(type == 0) {
+            //type为0,即默认值,前端左侧栏展示菜品所有分类
+            List<Category> dishList = categoryService.list();
+            return R.success(dishList);
+        }
         LambdaQueryWrapper<Category> queryWrapper = new LambdaQueryWrapper<>();
         queryWrapper.eq(Category::getType,type)
                 .orderByAsc(Category::getSort)

@@ -39,7 +39,9 @@ public class LoginCheckFilter implements Filter {
                 "/employee/logout",
                 "/backend/**",
                 "/front/**",
-                "/common/**"
+                "/common/**",
+                "/user/sendMsg",
+                "/user/login"
         };
         boolean check = check(urls, URI);
         //3.若不需要处理,直接放行
@@ -48,15 +50,28 @@ public class LoginCheckFilter implements Filter {
             filterChain.doFilter(request,response);
             return;
         }
-        //4.判断登录状态,若已登录,放行
-        if(request.getSession().getAttribute("employee") != null) {
-            //将当前用户id存入ThreadLocal,便于MP自动填充
-            Long id = (Long) request.getSession().getAttribute("employee");
-            BaseContext.setCurrentId(id);
+        //4.1.判断登录状态,若已登录,放行
+        if(URI.contains("employee")||URI.contains("category")||URI.contains("dish")||URI.contains("setmeal")||URI.contains("order")) {
+            if(request.getSession().getAttribute("employee") != null) {
+                //将当前用户id存入ThreadLocal,便于MP自动填充
+                Long id = (Long) request.getSession().getAttribute("employee");
+                BaseContext.setCurrentId(id);
 
-            log.info("用户 {} 已登录,直接放行",request.getSession().getAttribute("employee"));
-            filterChain.doFilter(request,response);
-            return;
+                log.info("用户 {} 已登录,直接放行",request.getSession().getAttribute("employee"));
+                filterChain.doFilter(request,response);
+                return;
+            }
+        }else{
+            //4.2.判断登录状态,若已登录,放行
+            if (request.getSession().getAttribute("user") != null) {
+                //将当前用户id存入ThreadLocal,便于MP自动填充
+                Long id = (Long) request.getSession().getAttribute("user");
+                BaseContext.setCurrentId(id);
+
+                log.info("用户 {} 已登录,直接放行", request.getSession().getAttribute("user"));
+                filterChain.doFilter(request, response);
+                return;
+            }
         }
         //5.若未登录则返回登录结果,通过输出流方式向客户端响应数据
         log.info("用户未登录");

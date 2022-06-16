@@ -7,6 +7,7 @@ import com.xuyuchao.reggie.common.R;
 import com.xuyuchao.reggie.dto.DishDto;
 import com.xuyuchao.reggie.entity.Category;
 import com.xuyuchao.reggie.entity.Dish;
+import com.xuyuchao.reggie.entity.DishFlavor;
 import com.xuyuchao.reggie.service.CategoryService;
 import com.xuyuchao.reggie.service.DishFlavorService;
 import com.xuyuchao.reggie.service.DishService;
@@ -184,5 +185,56 @@ public class DishController {
         });
 
         return R.success("删除成功!");
+    }
+
+    /**
+     * 业务一:添加套餐的菜品时根据菜品分类id得到菜品列表,也支持根据名称查询菜品
+     * 业务二:移动端首页展示展示菜品列表
+     * @param categoryId
+     * @param name
+     * @return
+     */
+    @GetMapping("/list")
+    public R<List> queryDishList(@RequestParam(value = "categoryId",required = false) String categoryId,@RequestParam(value = "status",required = false) Integer status,@RequestParam(value = "name",required = false)String name) {
+        log.info("categoryId={}",categoryId);
+        log.info("status={}",status);
+        log.info("name={}",name);
+        if(status == 1) {
+            //参数中有status代表是移动端主页展示菜品列表(注意停售菜品),注意前端展示菜品需要口味数据,即返回dto
+            LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Dish::getCategoryId,categoryId)
+                    .eq(Dish::getStatus,1);
+            List<Dish> dishList = dishService.list(queryWrapper);
+            //遍历菜品列表dishList,并和菜品口味一起整理到dto对象,组成集合返回
+            List<DishDto> dishDtoList = dishList.stream().map(item -> {
+                DishDto dishDto = new DishDto();
+                BeanUtils.copyProperties(item, dishDto);
+                //根据菜品的id在菜品口味表中得到相应口味
+                LambdaQueryWrapper<DishFlavor> queryWrapper1 = new LambdaQueryWrapper<>();
+                queryWrapper1.eq(DishFlavor::getDishId, item.getId());
+                List<DishFlavor> dishFlavors = dishFlavorService.list(queryWrapper1);
+                //将得到的菜品口味信息封装到dishDto对象中并返回
+                dishDto.setFlavors(dishFlavors);
+                return dishDto;
+            }).collect(Collectors.toList());
+            return R.success(dishDtoList);
+        }
+        if(categoryId != null && name == null) {
+            //管理端根据菜品分类id获得菜品列表(注意停售菜品)
+            LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Dish::getCategoryId,categoryId)
+                    .eq(Dish::getStatus,1);
+            List<Dish> dishList = dishService.list(queryWrapper);
+            return R.success(dishList);
+        }
+        if(categoryId == null && name != null) {
+            //管理端根据name查询菜品(注意停售菜品)
+            LambdaQueryWrapper<Dish> queryWrapper = new LambdaQueryWrapper<>();
+            queryWrapper.eq(Dish::getName,name)
+                    .eq(Dish::getStatus,1);
+            List<Dish> dishList = dishService.list(queryWrapper);
+            return R.success(dishList);
+        }
+        return R.error("发生错误!");
     }
 }

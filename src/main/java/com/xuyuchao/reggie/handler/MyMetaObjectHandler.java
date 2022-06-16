@@ -24,6 +24,8 @@ public class MyMetaObjectHandler implements MetaObjectHandler {
     public void insertFill(MetaObject metaObject) {
         log.info("公共字段填充insertFill");
         this.strictInsertFill(metaObject, "createTime", () -> LocalDateTime.now(), LocalDateTime.class); // 起始版本 3.3.3(推荐)
+        this.strictInsertFill(metaObject, "orderTime", () -> LocalDateTime.now(), LocalDateTime.class); // 起始版本 3.3.3(推荐)
+        this.strictInsertFill(metaObject, "checkoutTime", () -> LocalDateTime.now(), LocalDateTime.class); // 起始版本 3.3.3(推荐)
         this.strictInsertFill(metaObject, "updateTime", () -> LocalDateTime.now(), LocalDateTime.class); // 起始版本 3.3.3(推荐)
         this.strictInsertFill(metaObject, "createUser", () -> BaseContext.getCurrentId(), Long.class); // 起始版本 3.3.3(推荐)
         this.strictInsertFill(metaObject, "updateUser", () -> BaseContext.getCurrentId(), Long.class); // 起始版本 3.3.3(推荐)

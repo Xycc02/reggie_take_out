@@ -42,7 +42,7 @@ function  addCartApi(data){
       })
 }
 
-//购物车中修改商品
+//购物车中减少商品数量
 function  updateCartApi(data){
     return $axios({
         'url': '/shoppingCart/sub',
