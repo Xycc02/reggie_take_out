@@ -21,7 +21,7 @@ mybatis-plus:
       id-type: ASSIGN_ID
 
 reggie:
-  path: E:\Java微服务\瑞吉外卖\img\
+  path: /usr/local/reggie_take_out
   email: xyc2672424338@163.com
   name: 徐宇超
   authentication: GHZMKUVHNWQLYHTJ
